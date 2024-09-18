@@ -5,9 +5,10 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = github:nix-community/home-manager;
+
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
   };
 
   outputs = { nixpkgs, home-manager,  ... } @ inputs:
@@ -16,11 +17,11 @@
   in
   {
        nixosConfigurations = {
-         nixos = lib.nixosSystem {
-           specialArgs = { inherit inputs; };
-           system = "x86_64-linux";
-           modules = [
-          ./nixos/configuration.nix
+          nixos = lib.nixosSystem {
+            specialArgs = { inherit inputs; };
+            system = "x86_64-linux";
+            modules = [
+           ./nixos/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager = {
