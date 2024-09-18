@@ -23,7 +23,82 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.nat = {
+  enable = true;
+  internalInterfaces = ["ve-+"];
+  externalInterface = "ens3";
+  # Lazy IPv6 connectivity for the container
+  enableIPv6 = true;
+};
 
+containers.test = {
+  autoStart = true;
+  privateNetwork = true;
+  hostAddress = "192.168.100.10";
+  localAddress = "192.168.100.11";
+  hostAddress6 = "fc00::1";
+  localAddress6 = "fc00::2";
+  config = { config, pkgs, lib, ... }: {  
+
+
+     users.users.alias = {
+      isNormalUser = true;
+      description = "Alias";
+      extraGroups = [ "networkmanager" "wheel" ];
+      packages = with pkgs; [
+        neovim
+	freeradius
+     ];
+    };
+
+    users.users.radius.group = "radius";
+    users.groups.radius = {};
+
+    # Enable OpenSSH
+    services.openssh.enable = true;
+
+    # Enable Freeradius
+    services.freeradius = {
+    	enable = true;
+    };
+
+    networking = {
+      firewall = {
+        enable = true;
+        allowedTCPPorts = [ 80 ];
+      };
+      # Use systemd-resolved inside the container
+      # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+      useHostResolvConf = lib.mkForce false;
+    };
+    
+    services.resolved.enable = true;
+
+  };
+};
+/*  networking = {
+    bridges.br0.interfaces = ["eth1"];
+
+    # Get bridge-ip with DHCP
+    useDHCP = false;
+    interfaces."br0".useDHCP = true;
+
+    # Set bridge-ip static
+    interfaces."br0".ipv4.addresses = [{
+      address = "192.168.100.3";
+      prefixLength = 24;
+    }];
+    defaultGateway = "192.168.100.1";
+    nameservers = [ "192.168.100.1" ];
+};
+
+  containers.freeradius = {
+    privateNetwork = true;
+    hostBridge = "br0"; # Specify the bridge name
+    localAddress = "192.168.100.11";
+    config = { };
+    };*/
+  # Freeradius container
   # Set your time zone.
   time.timeZone = "Europe/Paris";
 
@@ -48,7 +123,6 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-
   # Configure keymap in X11
   services.xserver = {
     layout = "us";
@@ -62,7 +136,6 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -116,6 +189,9 @@
   fonts.packages = [
     pkgs.font-awesome
   ];
+
+
+  nixpkgs.config.xdg.portal.config.common.default = "*";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
