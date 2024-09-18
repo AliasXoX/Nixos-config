@@ -11,28 +11,22 @@
         "HDMI-A-1"
       ];
       modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" ];
-      modules-center = [ "sway/window" ];
-      modules-right = [ "network" "cpu" "memory" "battery" "clock" "custom/power" ];
+      modules-center = [ "sway/window" "hyprland/workspaces" ];
+      modules-right = [ "network" "pulseaudio" "cpu" "battery" "clock" "custom/power" ];
 
-      "sway/workspaces" = {
-        disable-scroll = true;
+      "hyprland/workspaces" = {
+	active-only = true;
         all-outputs = false;
         format = "{icon}";
-        format-icons = {
-          "1:web" = "";
-          "2:code" = "";
-          "3:term" = "";
-          "4:work" = "";
-          "5:music" = "";
-          "6:docs" = "";
-          "urgent" = "";
-          "focused" = "";
-          "default" = "";
-        };
       };
 
       "sway/mode" = {
         format = "<span style=\"italic\">{}</span>";
+      };
+
+      "pulseaudio" = {
+      	format = "{volume}% 🔊";
+	format-muted = "🔇";
       };
 
       "custom/power" = {
@@ -56,8 +50,8 @@
         bat = "BAT0";
         states = {
           "good" = 95;
-          "warning" = 30;
-          "critical" = 15;
+          "warning" = 20;
+          "critical" = 10;
         };
         format = "{capacity}% {icon}";
         format-icons = ["" "" "" "" ""];
