@@ -3,15 +3,47 @@
 {
   home.username = "alias";
   home.homeDirectory = "/home/alias";
-  home.stateVersion = "23.11";
+  home.stateVersion = "24.05";
   home.packages = [
     pkgs.neovim
     pkgs.tldr
     pkgs.htop
-    pkgs.kitty
-    pkgs.chromium
     pkgs.google-chrome
+    pkgs.jetbrains.pycharm-professional
+    pkgs.postgresql
+    pkgs.brightnessctl
+    pkgs.libnotify
+    pkgs.swww
+    pkgs.wl-clipboard
+    pkgs.arduino
+    pkgs.shutter
+    pkgs.pulseaudio
+    pkgs.pavucontrol
+    pkgs.hyprcursor
+    pkgs.dracula-theme
   ];
+
+  home.pointerCursor = 
+    let 
+      getFrom = url: hash: name: {
+          gtk.enable = true;
+          x11.enable = true;
+          name = name;
+          size = 48;
+          package = 
+            pkgs.runCommand "moveUp" {} ''
+              mkdir -p $out/share/icons
+              ln -s ${pkgs.fetchzip {
+                url = url;
+                hash = hash;
+              }} $out/share/icons/${name}
+          '';
+        };
+    in
+      getFrom 
+        "https://github.com/ful1e5/fuchsia-cursor/releases/download/v2.0.0/Fuchsia-Pop.tar.gz"
+        "sha256-BvVE9qupMjw7JRqFUj1J0a4ys6kc9fOLBPx2bGaapTk="
+        "Fuchsia-Pop";
  
   programs.home-manager.enable = true;
 
@@ -19,5 +51,10 @@
      ./apps/git.nix
      ./apps/hyprland.nix
      ./apps/waybar.nix
+     ./apps/poetry.nix
+     ./apps/kitty.nix
+     ./apps/mako.nix
+     ./apps/rofi.nix
+     ./apps/xdg_portal.nix
   ];
 }
