@@ -5,7 +5,6 @@
   home.homeDirectory = "/home/alias";
   home.stateVersion = "24.05";
   home.packages = [
-    pkgs.neovim
     pkgs.tldr
     pkgs.htop
     pkgs.google-chrome
@@ -21,13 +20,14 @@
     pkgs.pavucontrol
     pkgs.hyprcursor
     pkgs.dracula-theme
+    pkgs.vault
   ];
 
   home.pointerCursor = 
     let 
       getFrom = url: hash: name: {
           gtk.enable = true;
-          x11.enable = true;
+          # x11.enable = true;
           name = name;
           size = 48;
           package = 
@@ -56,5 +56,6 @@
      ./apps/mako.nix
      ./apps/rofi.nix
      ./apps/xdg_portal.nix
+     ./apps/neovim.nix
   ];
 }
