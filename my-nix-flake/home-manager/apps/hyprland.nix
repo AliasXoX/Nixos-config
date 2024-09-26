@@ -48,7 +48,7 @@
       gestures = {
       	workspace_swipe = "true";
       };
-      exec-once = ["hyprctl setcursor Dracula-cursors 24" "waybar" "swww-daemon & swww img ~/my-nix-flake/home-manager/wallpaper_3.png"];
+      exec-once = ["hyprctl setcursor Dracula-cursors 24" "swww-daemon & swww img ~/my-nix-flake/home-manager/wallpaper_3.png"];
     };
   };
 }
