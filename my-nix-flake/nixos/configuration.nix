@@ -26,7 +26,7 @@
   networking.nat = {
   enable = true;
   internalInterfaces = ["ve-+"];
-  externalInterface = "enp0s20f0u1";
+  externalInterface = "enp0s20f0u3";
   # Lazy IPv6 connectivity for the container
   enableIPv6 = true;
 };
@@ -72,6 +72,61 @@ containers.test = {
   };
 };
 
+containers.psychoac = {
+  autoStart = true;
+  privateNetwork = true;
+  hostAddress = "192.168.100.10";
+  localAddress = "192.168.100.12";
+  hostAddress6 = "fc00::1";
+  localAddress6 = "fc00::3";
+  config = { config, pkgs, lib, ... }: {  
+     users.users.alias = {
+      isNormalUser = true;
+      description = "Alias";
+      extraGroups = [ "networkmanager" "wheel" ];
+      packages = with pkgs; [
+        neovim
+	openssl
+     ];
+    };
+
+    # Enable OpenSSH
+    services.openssh.enable = true;    
+
+    system.stateVersion = "24.11";
+
+    networking = {
+      firewall = {
+        enable = true;
+        allowedTCPPorts = [ 80 443];
+      };
+      # Use systemd-resolved inside the container
+      # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+      useHostResolvConf = lib.mkForce false;
+    };
+    
+    services.resolved.enable = true;
+
+    services.httpd = {
+    	enable = true;
+	enablePHP = true;
+	virtualHosts."sound-of-science.org" = {
+	  documentRoot = "/var/www/sound-of-science.org";
+	};
+    };
+
+    services.mysql = {
+	enable = true;
+	package = pkgs.mariadb;
+    };
+
+    systemd.tmpfiles.rules = [
+    "d /var/www/sound-of-science.org"
+    "f /var/www/sound-of-science.org/index.php - - - - <?php phpinfo();"
+    ];
+  };
+};
+
   # Set your time zone.
   time.timeZone = "Europe/Paris";
 
@@ -91,16 +146,20 @@ containers.test = {
   };
 
   # Enable the X11 windowing system.
+
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+#  services.xserver.desktopManager.gnome.enable = true;
   # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "alt-intl";
-  };
+#  services.xserver = {
+#    xkb.layout = "us";
+#    xkb.variant = "alt-intl";
+#  };
+  
+  # Enable hyprlock
+  security.pam.services.hyprlock = {};
 
   # Configure console keymap
   console.keyMap = "dvorak";
@@ -138,6 +197,19 @@ containers.test = {
     ];
   };
 
+  users.users.temp = {
+    isNormalUser = true;
+    description = "temp";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+      firefox
+      neovim
+      minicom
+    ];
+  };
+
+  services.pcscd.enable = true;
+
   # Enable Hyprland
   programs.hyprland = {
     enable = true;
@@ -169,7 +241,6 @@ containers.test = {
   ];
 
 
-  nixpkgs.config.xdg.portal.config.common.default = "*";
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -182,7 +253,7 @@ containers.test = {
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
