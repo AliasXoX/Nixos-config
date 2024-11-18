@@ -9,6 +9,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    Hyprspace = {
+    	url = "github:KZDKM/Hyprspace";
+	inputs.hyprland.follows = "hyprland";
+    };
   };
 
   outputs = { nixpkgs, home-manager,  ... } @ inputs:
@@ -28,6 +32,7 @@
               useUserPackages = true;
               useGlobalPkgs = true;
               users.alias = ./home-manager/home.nix;
+	      extraSpecialArgs = {inherit inputs;};
             };
           }
         ];
