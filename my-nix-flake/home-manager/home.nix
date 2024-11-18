@@ -9,6 +9,7 @@
     pkgs.htop
     pkgs.google-chrome
     pkgs.jetbrains.pycharm-professional
+    pkgs.jetbrains.ruby-mine
     pkgs.postgresql
     pkgs.brightnessctl
     pkgs.libnotify
@@ -18,9 +19,20 @@
     pkgs.shutter
     pkgs.pulseaudio
     pkgs.pavucontrol
-    pkgs.hyprcursor
     pkgs.dracula-theme
     pkgs.vault
+    pkgs.prismlauncher
+    pkgs.reaper # sound mixing software
+    pkgs.cargo
+    pkgs.rustc
+    pkgs.inter
+    pkgs.papirus-icon-theme
+    pkgs.hyprnome # Manage workspace in hyprland like GNOME
+    pkgs.xfce.thunar # File manager
+    pkgs.filezilla # Filezilla
+    pkgs.pinentry-curses
+    pkgs.minicom
+    pkgs.nautilus   
   ];
 
   home.pointerCursor = 
@@ -46,7 +58,6 @@
         "Fuchsia-Pop";
  
   programs.home-manager.enable = true;
-
   imports = [
      ./apps/git.nix
      ./apps/hyprland.nix
@@ -57,5 +68,9 @@
      ./apps/rofi.nix
      ./apps/xdg_portal.nix
      ./apps/neovim.nix
+     ./apps/hyprlock.nix
+     ./apps/rofi-pass.nix
+     ./apps/gpg.nix
+     ./apps/pass.nix
   ];
 }
