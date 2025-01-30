@@ -11,9 +11,36 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = false;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader = {
+  	grub = {
+		forceInstall = false;
 
+		enable = true;
+		useOSProber = true;
+		copyKernels = true;
+		efiSupport = true;
+		efiInstallAsRemovable = false;
+		fsIdentifier = "label";
+		devices = ["nodev"];
+		extraEntries = ''
+			menu entry "Reboot" {
+				reboot
+			}
+			menu entry "Poweroff" {
+				halt
+			}
+		'';
+		minegrub-theme = {
+      			enable = false;
+      			splash = "100% Flakes!";
+      			background = "background_options/1.8  - [Classic Minecraft].png";
+      			boot-options-count = 4;
+    		};
+	};
+  };
+  
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -34,11 +61,11 @@
 
 containers.test = {
   autoStart = true;
-  privateNetwork = true;
-  hostAddress = "192.168.100.10";
-  localAddress = "192.168.100.11";
-  hostAddress6 = "fc00::1";
-  localAddress6 = "fc00::2";
+  privateNetwork = false;
+  #hostAddress = "192.168.100.10";
+  #localAddress = "192.168.100.11";
+  #hostAddress6 = "fc00::1";
+  #localAddress6 = "fc00::2";
   config = { config, pkgs, lib, ... }: {  
      users.users.alias = {
       isNormalUser = true;
@@ -49,6 +76,7 @@ containers.test = {
 	git
 	freeradius
 	openssl
+	python314
      ];
     };
 
@@ -72,60 +100,50 @@ containers.test = {
   };
 };
 
-containers.psychoac = {
+containers.lea5 = {
   autoStart = true;
-  privateNetwork = true;
-  hostAddress = "192.168.100.10";
-  localAddress = "192.168.100.12";
-  hostAddress6 = "fc00::1";
-  localAddress6 = "fc00::3";
-  config = { config, pkgs, lib, ... }: {  
-     users.users.alias = {
-      isNormalUser = true;
-      description = "Alias";
-      extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [
-        neovim
-	openssl
-     ];
+  privateNetwork = false;
+  #hostAddress = "192.168.100.10";
+  #localAddress = "192.168.100.12";
+  #hostAddress6 = "fc00::1";
+  #localAddress6 = "fc00::3";
+  config = { config, pkgs, lib, ... }: {
+    users.users.lea5 = {
+    	isNormalUser = true;
+	extraGroups = [ "networkmanager" "wheel" ];
+	packages = [
+	pkgs.git
+	pkgs.neovim
+	];
     };
 
-    # Enable OpenSSH
-    services.openssh.enable = true;    
+    # Enable flakes 
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
     system.stateVersion = "24.11";
+
+    services.postgresql = {
+    	enable = true;
+    	ensureDatabases = [ "mydatabase" ];
+    	authentication = pkgs.lib.mkOverride 10 ''
+      	#type database  DBuser  auth-method
+      	local all       all     trust
+    	'';
+    };
 
     networking = {
       firewall = {
         enable = true;
-        allowedTCPPorts = [ 80 443];
+	allowedTCPPorts = [ 80 ];
       };
-      # Use systemd-resolved inside the container
-      # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
       useHostResolvConf = lib.mkForce false;
     };
-    
+
     services.resolved.enable = true;
-
-    services.httpd = {
-    	enable = true;
-	enablePHP = true;
-	virtualHosts."sound-of-science.org" = {
-	  documentRoot = "/var/www/sound-of-science.org";
-	};
-    };
-
-    services.mysql = {
-	enable = true;
-	package = pkgs.mariadb;
-    };
-
-    systemd.tmpfiles.rules = [
-    "d /var/www/sound-of-science.org"
-    "f /var/www/sound-of-science.org/index.php - - - - <?php phpinfo();"
-    ];
+  
   };
 };
+
 
   # Set your time zone.
   time.timeZone = "Europe/Paris";
@@ -194,17 +212,6 @@ containers.psychoac = {
     packages = with pkgs; [
       firefox
     #  thunderbird
-    ];
-  };
-
-  users.users.temp = {
-    isNormalUser = true;
-    description = "temp";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      firefox
-      neovim
-      minicom
     ];
   };
 
