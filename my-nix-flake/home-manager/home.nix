@@ -10,7 +10,6 @@
     pkgs.google-chrome
     pkgs.jetbrains.pycharm-professional
     pkgs.jetbrains.ruby-mine
-    pkgs.postgresql
     pkgs.brightnessctl
     pkgs.libnotify
     pkgs.swww
@@ -30,9 +29,12 @@
     pkgs.hyprnome # Manage workspace in hyprland like GNOME
     pkgs.xfce.thunar # File manager
     pkgs.filezilla # Filezilla
-    pkgs.pinentry-curses
+    pkgs.pinentry-gtk2
     pkgs.minicom
     pkgs.nautilus   
+    pkgs.lime3ds
+    pkgs.musescore
+    pkgs.ideamaker
   ];
 
   home.pointerCursor = 
