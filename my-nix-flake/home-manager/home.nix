@@ -27,14 +27,16 @@
     pkgs.inter
     pkgs.papirus-icon-theme
     pkgs.hyprnome # Manage workspace in hyprland like GNOME
-    pkgs.xfce.thunar # File manager
     pkgs.filezilla # Filezilla
     pkgs.pinentry-gtk2
     pkgs.minicom
     pkgs.nautilus   
     pkgs.lime3ds
     pkgs.musescore
-    pkgs.ideamaker
+    pkgs.postgresql
+    pkgs.android-studio
+    pkgs.hyprshot
+    pkgs.flatpak
   ];
 
   home.pointerCursor = 
@@ -68,11 +70,13 @@
      ./apps/kitty.nix
      ./apps/mako.nix
      ./apps/rofi.nix
-     ./apps/xdg_portal.nix
+#     ./apps/xdg_portal.nix
      ./apps/neovim.nix
      ./apps/hyprlock.nix
      ./apps/rofi-pass.nix
      ./apps/gpg.nix
      ./apps/pass.nix
+     ./apps/vscode.nix
+     ./apps/java.nix
   ];
 }
