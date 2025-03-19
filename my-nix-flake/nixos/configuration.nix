@@ -11,9 +11,9 @@
     ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader = {
+  boot.loader.systemd-boot.enable = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
+  /*boot.loader = {
   	grub = {
 		forceInstall = false;
 
@@ -39,7 +39,7 @@
       			boot-options-count = 4;
     		};
 	};
-  };
+  };*/
   
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -50,10 +50,11 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.networkmanager.unmanaged = [ "interface-name:ve-*" ];
   networking.nat = {
   enable = true;
   internalInterfaces = ["ve-+"];
-  externalInterface = "enp0s20f0u3";
+  externalInterface = "wlp1s0";
   # Lazy IPv6 connectivity for the container
   enableIPv6 = true;
 };
@@ -100,49 +101,50 @@ containers.test = {
   };
 };
 
-containers.lea5 = {
+containers.tibProd = {
   autoStart = true;
-  privateNetwork = false;
-  #hostAddress = "192.168.100.10";
-  #localAddress = "192.168.100.12";
-  #hostAddress6 = "fc00::1";
-  #localAddress6 = "fc00::3";
+  privateNetwork = true;
+  hostAddress = "192.168.100.10";
+  localAddress = "192.168.100.11";
   config = { config, pkgs, lib, ... }: {
-    users.users.lea5 = {
-    	isNormalUser = true;
-	extraGroups = [ "networkmanager" "wheel" ];
-	packages = [
-	pkgs.git
-	pkgs.neovim
-	];
-    };
+     
+     environment.systemPackages = with pkgs; [
+       neovim
+       git
+     ];
 
-    # Enable flakes 
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+	services.nginx = {
+	  enable = true;
+	  virtualHosts.localhost = {
+	    root = "/var/www/site_tib_prod";
+	  };
+	};
+
+
+         # Enable OpenSSH
+    services.openssh.enable = true;    
 
     system.stateVersion = "24.11";
-
-    services.postgresql = {
-    	enable = true;
-    	ensureDatabases = [ "mydatabase" ];
-    	authentication = pkgs.lib.mkOverride 10 ''
-      	#type database  DBuser  auth-method
-      	local all       all     trust
-    	'';
-    };
 
     networking = {
       firewall = {
         enable = true;
-	allowedTCPPorts = [ 80 ];
+        allowedTCPPorts = [ 80 ];
       };
+      # Use systemd-resolved inside the container
+      # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
       useHostResolvConf = lib.mkForce false;
+      extraHosts =
+        ''127.0.0.3 blog.example.com
+        '';
     };
-
+    
     services.resolved.enable = true;
-  
+
+
   };
 };
+
 
 
   # Set your time zone.
@@ -162,6 +164,17 @@ containers.lea5 = {
     LC_TELEPHONE = "fr_FR.UTF-8";
     LC_TIME = "fr_FR.UTF-8";
   };
+
+  # Enable postgresql
+
+  services.postgresql = {
+	enable = true;
+    	ensureDatabases = [ "mydatabase" ];
+    	authentication = pkgs.lib.mkOverride 10 ''
+      	#type database  DBuser  auth-method
+      	local all       all     trust
+    	'';
+};
 
   # Enable the X11 windowing system.
 
@@ -186,7 +199,7 @@ containers.lea5 = {
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
