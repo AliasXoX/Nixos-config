@@ -22,6 +22,7 @@
 	"SUPER, P, fullscreen"
 	"SUPER, L, exec, hyprlock"
 	"SUPER_SHIFT, R, exec, rofi-pass"
+	"SUPER_SHIFT, S, exec, hyprshot --mode=region"
       ];
       binde = [
       	", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
@@ -58,8 +59,8 @@
       exec-once = [ "mako"  "hyprctl setcursor Dracula-cursors 24" "swww-daemon & swww img ./my-nix-flake/home-manager/wallpaper_3.png"];
     };
     plugins = [
-    	pkgs.hyprlandPlugins.hyprtrails
-	pkgs.hyprlandPlugins.hyprexpo
+    	#pkgs.hyprlandPlugins.hyprtrails
+	#pkgs.hyprlandPlugins.hyprexpo
     ];
   };
 }
