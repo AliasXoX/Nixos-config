@@ -28,16 +28,25 @@
     pkgs.papirus-icon-theme
     pkgs.hyprnome # Manage workspace in hyprland like GNOME
     pkgs.filezilla # Filezilla
-    pkgs.pinentry-gtk2
+    #pkgs.pinentry-gtk2
     pkgs.minicom
     pkgs.nautilus   
-    pkgs.lime3ds
+    #pkgs.lime3ds
     pkgs.musescore
     pkgs.postgresql
     pkgs.android-studio
     pkgs.hyprshot
     pkgs.flatpak
+    pkgs.hyprsunset
+    pkgs.strawberry
+    pkgs.vlc
+    pkgs.alsa-utils
+    pkgs.nodejs_latest
   ];
+
+  home.sessionVariables = {
+  	XDG_RUNTIME_DIR = "run/user/$UID";
+  };
 
   home.pointerCursor = 
     let 
@@ -62,15 +71,18 @@
         "Fuchsia-Pop";
  
   programs.home-manager.enable = true;
+
+  programs.bash.enable = true;
+
   imports = [
      ./apps/git.nix
      ./apps/hyprland.nix
      ./apps/waybar.nix
-     ./apps/poetry.nix
+     #./apps/poetry.nix
      ./apps/kitty.nix
      ./apps/mako.nix
      ./apps/rofi.nix
-#     ./apps/xdg_portal.nix
+     ./apps/xdg_portal.nix
      ./apps/neovim.nix
      ./apps/hyprlock.nix
      ./apps/rofi-pass.nix
@@ -78,5 +90,6 @@
      ./apps/pass.nix
      ./apps/vscode.nix
      ./apps/java.nix
+     ./apps/direnv.nix
   ];
 }
