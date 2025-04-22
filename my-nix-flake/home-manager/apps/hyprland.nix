@@ -22,13 +22,14 @@
 	"SUPER, P, fullscreen"
 	"SUPER, L, exec, hyprlock"
 	"SUPER_SHIFT, R, exec, rofi-pass"
-	"SUPER_SHIFT, S, exec, hyprshot --mode=region"
+	"SUPER_SHIFT, S, exec, hyprshot --mode=region -o ~/Pictures/Screenshots/"
       ];
       binde = [
       	", XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"
 	", XF86AudioLowerVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%-"
         ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
 	", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
+	#"SUPER, XF86MonBrightnessUp, exec, ${temperature}"  
       ];
       bindl = [
       	", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
@@ -56,7 +57,7 @@
       gestures = {
       	workspace_swipe = "true";
       };
-      exec-once = [ "mako"  "hyprctl setcursor Dracula-cursors 24" "swww-daemon & swww img ./my-nix-flake/home-manager/wallpaper_3.png"];
+      exec-once = [ "mako"  "hyprctl setcursor Dracula-cursors 24" "swww-daemon & swww img ./my-nix-flake/home-manager/wallpaper_3.png" "export WAYLAND_DISPLAY=wayland-1" "export HYPRSHOT_DIR=~/Pictures/Screenshots/"];
     };
     plugins = [
     	#pkgs.hyprlandPlugins.hyprtrails

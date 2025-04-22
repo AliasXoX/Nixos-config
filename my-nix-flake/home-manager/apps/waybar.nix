@@ -32,7 +32,7 @@
 
       "custom/power" = {
         format = "⏻";
-        on-click = "swaynag -t warning -m 'Power Menu Options' -b 'Shutdown'  'shutdown -h now' -b 'Restart' 'shutdown -r now' -b 'Logout' 'swaymsg exit' -b 'Hibernate' 'systemctl hibernate' --background=#005566 --button-background=#009999 --button-border=#002b33 --border-bottom=#002b33";
+        on-click = "shutdown -h now";
       };
 
       "tray" = {
