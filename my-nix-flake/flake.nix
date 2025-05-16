@@ -13,7 +13,6 @@
     	url = "github:KZDKM/Hyprspace";
 	inputs.hyprland.follows = "hyprland";
     };
-    minegrub-theme.url = "github:Lxtharia/minegrub-theme";
   };
 
   outputs = { nixpkgs, home-manager,  ... } @ inputs:
@@ -36,7 +35,6 @@
 	      extraSpecialArgs = {inherit inputs;};
             };
           }
-	  inputs.minegrub-theme.nixosModules.default
         ];
       };
     };

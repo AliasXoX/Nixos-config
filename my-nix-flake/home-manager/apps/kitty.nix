@@ -7,5 +7,7 @@
 		settings = {
 			confirm_os_window_close = 0;
 		};
+	   	keybindings= {
+		};
 	};
 }

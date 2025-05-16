@@ -42,6 +42,7 @@
   };*/
   
   networking.hostName = "nixos"; # Define your hostname.
+  networking.nftables.enable = true;
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -57,7 +58,11 @@
   externalInterface = "wlp1s0";
   # Lazy IPv6 connectivity for the container
   enableIPv6 = true;
-};
+  };
+  # Firewall
+  networking.firewall = {
+  	trustedInterfaces = [ "incusbr0" ];
+  };
 
 
 containers.test = {
@@ -238,7 +243,7 @@ containers.tibProd = {
   users.users.alias = {
     isNormalUser = true;
     description = "Alias";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "incus-admin" ];
     packages = with pkgs; [
       firefox
     #  thunderbird
@@ -251,6 +256,46 @@ containers.tibProd = {
   	enable = true;
   };
 
+  virtualisation.incus = {
+  	enable = true;
+    preseed = {
+      networks = [
+        {
+          config = {
+            "ipv4.address" = "10.0.100.1/24";
+            "ipv4.nat" = "true";
+          };
+          name = "incusbr0";
+          type = "bridge";
+        }
+      ];
+      profiles = [
+        {
+	  name = "default";
+          devices = {
+            root = {
+              path = "/";
+              pool = "default";
+              size = "35GiB";
+              type = "disk";
+            };
+          };
+          
+        }
+      ];
+      storage_pools = [
+        {
+          config = {
+            source = "/var/lib/incus/storage-pools/default";
+          };
+          driver = "dir";
+          name = "default";
+        }
+      ];
+
+    };
+  };
+
   services.pcscd.enable = true;
 
   # Enable Hyprland
@@ -258,7 +303,7 @@ containers.tibProd = {
     enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
   };
-   
+
   # Enable flakes 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   

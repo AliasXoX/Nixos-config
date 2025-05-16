@@ -8,13 +8,11 @@
     pkgs.tldr
     pkgs.htop
     pkgs.google-chrome
-    pkgs.jetbrains.pycharm-professional
     pkgs.jetbrains.ruby-mine
     pkgs.brightnessctl
     pkgs.libnotify
     pkgs.swww
     pkgs.wl-clipboard
-    pkgs.arduino
     pkgs.shutter
     pkgs.pulseaudio
     pkgs.pavucontrol
@@ -28,7 +26,6 @@
     pkgs.papirus-icon-theme
     pkgs.hyprnome # Manage workspace in hyprland like GNOME
     pkgs.filezilla # Filezilla
-    #pkgs.pinentry-gtk2
     pkgs.minicom
     pkgs.nautilus   
     #pkgs.lime3ds
@@ -41,7 +38,7 @@
     pkgs.strawberry
     pkgs.vlc
     pkgs.alsa-utils
-    pkgs.nodejs_latest
+    pkgs.webex
   ];
 
   home.sessionVariables = {
